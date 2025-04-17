@@ -34,6 +34,14 @@ namespace UniversitySchedule.API.Controllers
             return Ok(lesson);
         }
 
+
+        [HttpPost("{Day}")]
+        public async Task<ActionResult<IEnumerable<LessonDto>>> GetByDay(DateTime Day)
+        {
+            var lessons = await _lessonService.GetAllByTimeAsync(Day);
+            return Ok(lessons);
+        }
+
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] Application.DTOs.CreateLessonDto dto)
         {
