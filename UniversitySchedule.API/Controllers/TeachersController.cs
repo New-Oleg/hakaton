@@ -26,6 +26,20 @@ public class TeachersController : ControllerBase
         return teacher == null ? NotFound() : Ok(teacher);
     }
 
+    [HttpGet("me")]
+    public async Task<IActionResult> GetMe()
+    {
+        var studentIdClaim = User.Claims.FirstOrDefault(c => c.Type == "studentId");
+
+        if (studentIdClaim == null || !int.TryParse(studentIdClaim.Value, out var studentId))
+        {
+            return Unauthorized("Invalid or missing studentId in token");
+        }
+
+        var student = await _teacherRepo.GetByIdAsync(studentId);
+        return student == null ? NotFound() : Ok(student);
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] Teacher teacher)
     {
