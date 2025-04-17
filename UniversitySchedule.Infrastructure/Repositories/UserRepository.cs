@@ -6,7 +6,7 @@ using UniversitySchedule.Infrastructure.Data;
 
 namespace UniversitySchedule.Infrastructure.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : IUserRepository<User>
     {
         private readonly AppDbContext _dbContext;
 

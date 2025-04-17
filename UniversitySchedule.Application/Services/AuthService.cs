@@ -10,10 +10,10 @@ namespace UniversitySchedule.Application.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserRepository<User> _userRepository;
         private readonly JwtTokenGenerator _jwtTokenGenerator;
 
-        public AuthService(IUserRepository userRepository, JwtTokenGenerator jwtTokenGenerator)
+        public AuthService(IUserRepository<User> userRepository, JwtTokenGenerator jwtTokenGenerator)
         {
             _userRepository = userRepository;
             _jwtTokenGenerator = jwtTokenGenerator;

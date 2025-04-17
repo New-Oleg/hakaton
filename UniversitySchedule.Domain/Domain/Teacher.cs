@@ -2,7 +2,7 @@
 
 namespace UniversitySchedule.Domain.Entities
 {
-    public class Teacher
+    public class Teacher : User
     {
         [Key]
         public int Id { get; set; }

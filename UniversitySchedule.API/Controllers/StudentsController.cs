@@ -8,15 +8,15 @@ namespace UniversitySchedule.API.Controllers;
 [Route("api/[controller]")]
 public class StudentsController : ControllerBase
 {
-    private readonly IStudentRepository _studentRepo;
+    private readonly IStudentRepository<Student> _studentRepo;
 
-    public StudentsController(IStudentRepository studentRepo)
+    public StudentsController(IStudentRepository<Student> studentRepo)
     {
         _studentRepo = studentRepo;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll() =>
+    public async Task<ActionResult<IEnumerable<Student>>> GetAll() =>
         Ok(await _studentRepo.GetAllAsync());
 
     [HttpGet("{id}")]

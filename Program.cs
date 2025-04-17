@@ -8,10 +8,12 @@ using UniversitySchedule.API.Middlewares;
 using UniversitySchedule.Application.Interfaces.Repositories;
 using UniversitySchedule.Application.Interfaces.Services;
 using UniversitySchedule.Application.Services;
+using UniversitySchedule.Domain.Entities;
 using UniversitySchedule.Infrastructure.Auth;
 using UniversitySchedule.Infrastructure.Data;
 using UniversitySchedule.Infrastructure.Repositories;
 using UniversitySchedule.Persistence;
+using UniversitySchedule.UniversitySchedule.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,8 @@ IConfiguration configuration = builder.Configuration;
 // Регистрируем сервисы
 // ===========================
 
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
 // Используем SQLite как провайдер базы данных
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
@@ -30,7 +34,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserRepository<User>, UserRepository>();
+builder.Services.AddScoped<IStudentRepository<Student>, StudentRepository>();
 
 // Регистрация сервисов
 builder.Services.AddScoped<ILessonService, LessonService>();
@@ -42,6 +47,8 @@ builder.Services.AddSingleton<JwtTokenGenerator>();
 
 // Добавляем контроллеры
 builder.Services.AddControllers();
+
+//builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 // (Опционально) Настройка аутентификации с JWT Bearer
 builder.Services.AddAuthentication(options =>
@@ -133,3 +140,5 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+public partial class Program { }

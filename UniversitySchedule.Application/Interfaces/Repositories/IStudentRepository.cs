@@ -4,11 +4,10 @@ using UniversitySchedule.Domain.Entities;
 
 namespace UniversitySchedule.Application.Interfaces.Repositories
 {
-    public interface IStudentRepository
+    public interface IStudentRepository<Student> : IUserRepository<Student>
     {
         Task<IEnumerable<Student>> GetAllAsync();
         Task<Student> GetByIdAsync(int id);
-        Task AddAsync(Student student);
         Task UpdateAsync(Student student);
         Task DeleteAsync(int id);
     }

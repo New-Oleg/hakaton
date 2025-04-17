@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using UniversitySchedule.Application.DTOs.Auth;
 using UniversitySchedule.Application.Interfaces.Repositories;
 using UniversitySchedule.Application.Interfaces.Services;
@@ -9,9 +11,9 @@ namespace UniversitySchedule.Application.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserRepository<User> _userRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository<User> userRepository)
         {
             _userRepository = userRepository;
         }
@@ -39,6 +41,30 @@ namespace UniversitySchedule.Application.Services
 
             await _userRepository.AddAsync(user);
             return true;
+        }
+
+        public string HashPassword(string password, out string salt)
+        {
+            byte[] saltBytes = RandomNumberGenerator.GetBytes(16);
+            salt = Convert.ToBase64String(saltBytes);
+
+            var hash = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password, saltBytes,
+                KeyDerivationPrf.HMACSHA256,
+                10000, 32));
+
+            return hash;
+        }
+
+        public bool VerifyPassword(string password, string hash, string salt)
+        {
+            var saltBytes = Convert.FromBase64String(salt);
+            var enteredHash = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password, saltBytes,
+                KeyDerivationPrf.HMACSHA256,
+                10000, 32));
+
+            return hash == enteredHash;
         }
     }
 }

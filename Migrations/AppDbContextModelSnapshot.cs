@@ -17,6 +17,28 @@ namespace UniversitySchedule.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.36");
 
+            modelBuilder.Entity("UniversitySchedule.Application.DTOs.PasswordResetToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ExpirationTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PasswordResetTokens");
+                });
+
             modelBuilder.Entity("UniversitySchedule.Domain.Entities.Group", b =>
                 {
                     b.Property<int>("Id")
@@ -57,52 +79,12 @@ namespace UniversitySchedule.Migrations
                     b.Property<int>("TeacherId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("auditorium")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.HasIndex("TeacherId");
 
                     b.ToTable("Lessons");
-                });
-
-            modelBuilder.Entity("UniversitySchedule.Domain.Entities.Student", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("GroupId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("Students");
-                });
-
-            modelBuilder.Entity("UniversitySchedule.Domain.Entities.Teacher", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Teachers");
                 });
 
             modelBuilder.Entity("UniversitySchedule.Domain.Entities.User", b =>
@@ -111,7 +93,19 @@ namespace UniversitySchedule.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordSalt")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -125,36 +119,45 @@ namespace UniversitySchedule.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
 
-            modelBuilder.Entity("UniversitySchedule.Domain.Entities.Lesson", b =>
-                {
-                    b.HasOne("UniversitySchedule.Domain.Entities.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("UniversitySchedule.Domain.Entities.Teacher", "Teacher")
-                        .WithMany()
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("Teacher");
+                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
                 });
 
             modelBuilder.Entity("UniversitySchedule.Domain.Entities.Student", b =>
                 {
-                    b.HasOne("UniversitySchedule.Domain.Entities.Group", "Group")
+                    b.HasBaseType("UniversitySchedule.Domain.Entities.User");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Student_FullName");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasDiscriminator().HasValue("Student");
+                });
+
+            modelBuilder.Entity("UniversitySchedule.Domain.Entities.Teacher", b =>
+                {
+                    b.HasBaseType("UniversitySchedule.Domain.Entities.User");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasDiscriminator().HasValue("Teacher");
+                });
+
+            modelBuilder.Entity("UniversitySchedule.Domain.Entities.Student", b =>
+                {
+                    b.HasOne("UniversitySchedule.Domain.Entities.Group", null)
                         .WithMany("Students")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("UniversitySchedule.Domain.Entities.Group", b =>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using UniversitySchedule.Domain.Entities;
+using UniversitySchedule.Application.DTOs;
 
 namespace UniversitySchedule.Infrastructure.Data
 {
@@ -11,7 +12,7 @@ namespace UniversitySchedule.Infrastructure.Data
            : base(options)
         {
         }
-
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
@@ -24,4 +25,6 @@ namespace UniversitySchedule.Infrastructure.Data
             // Конфигурация сущностей, связи, ограничения и другой шлап
         }
     }
+
+
 }

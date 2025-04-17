@@ -3,9 +3,9 @@ using UniversitySchedule.Domain.Entities;
 
 namespace UniversitySchedule.Application.Interfaces.Repositories
 {
-    public interface IUserRepository
+    public interface IUserRepository<T>
     {
         Task<User> GetByUsernameAsync(string username);
-        Task AddAsync(User user);
+        Task AddAsync(T user);
     }
 }

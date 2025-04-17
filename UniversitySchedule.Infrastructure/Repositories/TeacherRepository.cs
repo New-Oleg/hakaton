@@ -11,7 +11,7 @@ namespace UniversitySchedule.Infrastructure.Repositories
     {
         private readonly AppDbContext _context;
 
-        public TeacherRepository(AppDbContext context)
+        public TeacherRepository(AppDbContext context) 
         {
             _context = context;
         }
@@ -41,5 +41,12 @@ namespace UniversitySchedule.Infrastructure.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<User> GetByUsernameAsync(string username)
+        {
+            return await _context.Teachers.FirstOrDefaultAsync(u => u.Username == username);
+        }
+
     }
 }
+
